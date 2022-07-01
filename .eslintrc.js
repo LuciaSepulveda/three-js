@@ -18,5 +18,18 @@ module.exports = {
         'space-before-function-paren': ['off'],
         indent: ['off'],
     },
-    parser: 'babel-eslint',
+    parser: '@babel/eslint-parser',
+    parserOptions: {
+        requireConfigFile: false,
+        babelOptions: {
+            babelrc: false,
+            configFile: false,
+            // your babel options
+            presets: ['@babel/preset-react'],
+        },
+    },
+    env: {
+        browser: true,
+        node: true,
+    },
 }
