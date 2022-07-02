@@ -31,34 +31,53 @@ const Scene = () => {
 
             const controls = new OrbitControls(camera, renderer.domElement)
             controls.enableDamping = true
+
+            //textures
+            const textureLoader = new THREE.TextureLoader()
+
+            //base color
+            const map = textureLoader.load('./bricks/Brick_Wall_017_basecolor.jpg')
+
+            //ambiental oclussion
+            const ambientalOclussion = textureLoader.load('./bricks/Brick_Wall_017_ambientOcclusion.jpg')
+
+            //roughness
+            const roughness = textureLoader.load('./bricks/Brick_Wall_017_roughness.jpg')
+
+            //normales
+            const normals = textureLoader.load('./bricks/Brick_Wall_017_normal.jpg')
+
+            // displacement map
+            const height = textureLoader.load('./bricks/Brick_Wall_017_height.png')
+
             //Cube
             const cube = new THREE.Mesh(
-                new THREE.BoxBufferGeometry(1, 1, 1),
-                new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.3, wireframe: true })
+                new THREE.BoxBufferGeometry(3, 3, 3, 250, 250, 250),
+                new THREE.MeshStandardMaterial({
+                    map: map,
+                    aoMap: ambientalOclussion,
+                    roughnessMap: roughness,
+                    normalMap: normals,
+                    displacementMap: height,
+                    displacementScale: 0.07,
+                })
             )
 
             cube.position.set(0, 0, 0)
 
-            const sphere = new THREE.Mesh(
-                new THREE.SphereBufferGeometry(0.5),
-                new THREE.MeshNormalMaterial({ flatShading: true })
-            )
-
-            sphere.position.set(-3, 0, 0)
-
-            const textureLoader = new THREE.TextureLoader()
-            const matcap = textureLoader.load('./textures/matcap.png')
-
-            const sphere1 = new THREE.Mesh(
-                new THREE.SphereBufferGeometry(0.5),
-                new THREE.MeshMatcapMaterial({ matcap: matcap })
-            )
-
-            sphere1.position.set(3, 0, 0)
-
             scene.add(cube)
-            scene.add(sphere)
-            scene.add(sphere1)
+
+            //Lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
+            const pointLight = new THREE.PointLight(0xffffff, 1.3)
+            pointLight.position.y = 6
+
+            //directional light
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.3)
+            directionalLight.position.set(5, 5, 5)
+            scene.add(ambientLight)
+            //scene.add(pointLight)
+            scene.add(directionalLight)
 
             //render
             const animate = () => {
