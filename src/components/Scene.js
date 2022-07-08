@@ -1,6 +1,7 @@
 import { useRef, useEffect } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
 const Scene = () => {
     const mountRef = useRef(null)
@@ -17,7 +18,7 @@ const Scene = () => {
                 0.1,
                 1000
             )
-            camera.position.z = 10
+            camera.position.z = 3
             scene.add(camera)
 
             //renderer
@@ -65,10 +66,43 @@ const Scene = () => {
 
             cube.position.set(0, 0, 0)
 
-            scene.add(cube)
+            //scene.add(cube)
+
+            //plane
+            const geoPlane = new THREE.PlaneBufferGeometry(100, 100)
+            const material = new THREE.MeshStandardMaterial({
+                map: map,
+                aoMap: ambientalOclussion,
+                roughnessMap: roughness,
+                normalMap: normals,
+                displacementMap: height,
+                displacementScale: 0.07,
+                side: THREE.DoubleSide,
+            })
+
+            const plane = new THREE.Mesh(geoPlane, material)
+
+            //scene.add(plane)
+
+            const box3d = new THREE.Box3()
+
+            //scene.add(box3d)
+
+            const loader = new GLTFLoader()
+
+            loader.load(
+                './Books_Magazines.gltf',
+                function (object) {
+                    scene.add(object.scene)
+                },
+                undefined,
+                function (error) {
+                    console.log(error)
+                }
+            )
 
             //Lights
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1)
             const pointLight = new THREE.PointLight(0xffffff, 1.3)
             pointLight.position.y = 6
 
@@ -77,7 +111,7 @@ const Scene = () => {
             directionalLight.position.set(5, 5, 5)
             scene.add(ambientLight)
             //scene.add(pointLight)
-            scene.add(directionalLight)
+            //scene.add(directionalLight)
 
             //render
             const animate = () => {
